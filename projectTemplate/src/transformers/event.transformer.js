@@ -47,6 +47,10 @@ const eventTransformer = (data) => {
     delete obj?.images;
     delete obj?.video;
 
+    if (data?.custom && Object.keys(data?.custom).length) {
+        obj = { obj, ...data.custom }
+    }
+
     return obj;
 };
 
@@ -82,7 +86,7 @@ const endUserEventTransformer = (data) => {
         language: data?.language ? data.language : [],
         startTime: data?.startTime ? data.startTime.toString() : '',
         endTime: data?.endTime ? data.endTime.toString() : '',
-        eventDuration: data?.startTime && data?.endTime ? dateFormat.getDiffBetweenToDatesAsHumanFormat(data.startTime, data.endTime,'x') : '',
+        eventDuration: data?.startTime && data?.endTime ? dateFormat.getDiffBetweenToDatesAsHumanFormat(data.startTime, data.endTime, 'x') : '',
         price: data?.price ? data?.price : 0,
         currency: data?.currency ? data?.currency : '',
         images: data?.images ? data?.images : [],
@@ -131,6 +135,10 @@ const endUserEventTransformer = (data) => {
 
     delete obj?.images;
     delete obj?.video;
+
+    if (data?.custom && Object.keys(data?.custom).length) {
+        obj = { obj, ...data.custom }
+    }
 
     return obj;
 };
