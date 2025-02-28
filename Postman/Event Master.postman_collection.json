@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "1885bb20-651f-4726-92e4-2b1dd500076e",
+		"name": "Event Master",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32090280"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"item": [
+				{
+					"name": "Create Project",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projectTitle\": \"code\",\n    \"eventSchema\": {\n        \"eventBooked\": {\n            \"type\": \"String\",\n            \"required\": false\n        },\n        \"eventBookingDate\": {\n            \"type\": \"Number\",\n            \"required\": \"true\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/project/create-project",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"project",
+								"create-project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Module",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projectTitle\": \"secretKey\",\n    \"moduleName\": \"category,property,contactUs,faq,quiz,challenge,simulation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/project/create-module",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"project",
+								"create-module"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

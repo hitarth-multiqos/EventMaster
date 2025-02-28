@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
+    <style type="text/css">
+        * {
+            border: none;
+            outline: none;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        tr,
+        td,
+        th,
+        thead,
+        tbody,
+        table {
+            border-spacing: 0;
+        }
+
+        td {
+            color: #9d9d9d;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            td {
+                color: #ffffff !important;
+            }
+
+        }
+    </style>
+</head>
+
+<body style="background: #fff;margin: 0;padding: 0;font-family: 'Forum', serif;">
+    <table align="center" width="500px" border="0" cellspacing="0" cellpadding="0"
+        style="padding: 10px;background:url('<%=locals.baseUrl%>/public/images/email-bg-image.jpg') center / cover;table-layout:fixed;">
+        <!-- Banner -->
+        <tr>
+            <td valign="top" align="center">
+                <table align="center" border="0" width="100%" cellspacing="0" cellpadding="0"
+                    style="table-layout:fixed;">
+                    <tr>
+                        <td valign="center" align="start" style="display: block;">
+                            <img src="<%=locals.baseUrl%>/public/images/otp-verification-image.png" alt="banner-image"
+                                style="display: block;width: 100%;height: 100%;object-fit: cover;">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- End Banner -->
+
+        <!-- Body -->
+        <tr>
+            <td valign="top" align="center"
+                style="padding: 40px 20px;border-left: 1px solid #B09684;border-right: 1px solid #B09684;">
+                <table align="center" border="0" width="100%" cellspacing="0" cellpadding="0"
+                    style="table-layout:fixed;margin: 0; padding: 0;">
+                    <tr>
+                        <td valign="center" align="center" width="100%"
+                            style="font-family: 'Forum', serif;font-size: 18px;line-height: 1.3;padding-bottom: 20px;">
+                            Dear <%=locals.userName%>,
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center" align="center" width="100%"
+                            style="font-family: 'Forum', serif;font-size: 18px;line-height: 1.3;padding-bottom: 4px;">
+                            Thank you for choosing Event Management.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center" align="center" width="100%"
+                            style="font-family: 'Forum', serif;font-size: 18px;line-height: 1.3;padding-bottom: 20px;">
+                            Please find below your code for verification:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center" align="center" style="padding-bottom: 20px;">
+                            <p
+                                style="font-family: 'Forum', serif;font-size: 20 px;line-height: 1.3;color: #fff;background: #B09684;padding: 6px 20px;display: inline-block;margin: 0 ;letter-spacing: 0.1em;">
+                                <%=locals.otp%>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center" align="center" width="100%"
+                            style="font-family: 'Forum', serif;font-size: 18px;line-height: 1.3;padding-bottom: 4px;">
+                            Please note that this verification code is valid for only 3 minutes.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center" align="center" width="100%"
+                            style="font-family: 'Forum', serif;font-size: 18px;line-height: 1.3;padding-bottom: 20px;">
+                            Do not share this verification code with anyone.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center" align="center" width="100%"
+                            style="font-family: 'Forum', serif;font-size: 18px;line-height: 1.3;">
+                            Best Regards, <br>
+                            Your Event Management Team
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- End Body -->
+
+        <!-- Footer -->
+        <tr>
+            <td valign="top" align="center" style="padding: 20px;background: #B09684;">
+                <table align="center" border="0" width="100%" cellspacing="0" cellpadding="0"
+                    style="table-layout:fixed;margin: 0; padding: 0;">
+                    <tr>
+                        <td valign="center" align="center">
+                            <a href="https://www.facebook.com/" target="_blank"
+                                style="display: inline-block;margin: 0 5px;"><img
+                                    src="<%=locals.baseUrl%>/public/images/facebook.png" alt="facebook"
+                                    style="display: block;"></a>
+                            <a href="https://www.instagram.com/" target="_blank"
+                                style="display: inline-block;margin: 0 5px;"><img
+                                    src="<%=locals.baseUrl%>/public/images/instagram.png" alt="instagram"
+                                    style="display: block;"></a>
+                            <a href="https://www.tiktok.com/" target="_blank"
+                                style="display: inline-block;margin: 0 5px;"><img
+                                    src="<%=locals.baseUrl%>/public/images/tiktok.png" alt="tiktok"
+                                    style="display: block;"></a>
+                            <a href="https://www.whatsapp.com/" target="_blank"
+                                style="display: inline-block;margin: 0 5px;"><img
+                                    src="<%=locals.baseUrl%>/public/images/whatsapp.png" alt="whatsapp"
+                                    style="display: block;"></a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- End Footer -->
+    </table>
+</body>
+
+</html>

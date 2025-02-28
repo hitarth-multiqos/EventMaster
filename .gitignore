@@ -1,0 +1,7 @@
+node_modules
+public
+generated_projects
+logger
+.env
+package-lock.json
+eventSchemaOriginal.json
