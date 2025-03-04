@@ -1,4 +1,4 @@
-module.exports.createEventSchema = (modelName, pathToSchema, prehooks = false, eventBody, useDefault = true) => {
+module.exports.createEventSchema = (modelName, pathToSchema, prehooks = false, useDefault = true) => {
     try {
 
         let importString = `const mongoose = require('mongoose');
@@ -7,9 +7,9 @@ const constants = require('../../config/constants');
 const {ObjectId} = require('mongoose').Types;
 `;
         if (useDefault) {
-            let eventSchema = eventBody ? eventBody?.eventSchema : {};
+            let eventSchema = pathToSchema ? require(pathToSchema)?.eventSchema : {};
 
-            schema = eventBody ? eventBody : {
+            schema = {
                 "title": {
                     "type": "String",
                     "index": true,

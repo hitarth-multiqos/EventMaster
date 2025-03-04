@@ -48,8 +48,8 @@ module.exports.createProject = async (req, res) => {
         const destinationFolder = projectPath;
         await helper.copyFolder(sourceFolder, destinationFolder);
 
-        let schemaFile = req.file.path;
-        console.log('schemaFile', req.file);
+        let schemaFile = req?.file?.path;
+        console.log('schemaFile', req?.file);
         console.log('schemaFilePath', schemaFile);
         // Create Event Model
         useDefault = useDefault == 'true' ? true : false;
