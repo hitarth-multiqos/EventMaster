@@ -6,13 +6,40 @@ const helper = require('../../helpers/helper');
 const modelService = require('../../services/model.service');
 const { generateNewModuleService } = require('../../services/module.service');
 const { generateDependencies, generatePackageJSON, generateENV, generateREADME } = require('../../services/other.service');
-const { validateDynamicSchema } = require('../../validations/eventSchema.validation')
+const { generateEventTransformer } = require('../../services/transformer.service');
+const fs = require('fs');
 
 // Create Project
 module.exports.createProject = async (req, res) => {
     try {
+        let { projectTitle, useDefault } = req.body;
 
-        const { projectTitle, eventSchema } = req.body;
+        if (!projectTitle) {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Project title is required",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+        if (typeof (projectTitle) != 'string') {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Please enter valid project title",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+
+        if (!req?.body?.useDefault) {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Project title is required",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+        if (typeof (useDefault) != 'string') {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Please enter valid useDefault",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+
         const projectPath = path.join(__dirname, '../../../', "generated_projects", projectTitle);
         const zipFileName = `${projectTitle}.zip`;
         const zipFilePath = path.join(__dirname, '../../../', 'generated_projects', zipFileName);
@@ -21,32 +48,31 @@ module.exports.createProject = async (req, res) => {
         const destinationFolder = projectPath;
         await helper.copyFolder(sourceFolder, destinationFolder);
 
-        if (!eventSchema) {
+        let schemaFile = req.file.path;
+        console.log('schemaFile', req.file);
+        console.log('schemaFilePath', schemaFile);
+        // Create Event Model
+        useDefault = useDefault == 'true' ? true : false;
+        let eventModel = modelService.createEventSchema('event', schemaFile, true, useDefault);
+        helper.writeProjectFile(`${projectPath}/src`, 'models', 'event.model.js', eventModel);
+        if (!useDefault) {
 
-            let pathToConfigFile = path.join(__dirname, '../../../', 'eventschema.json')
+            fs.unlinkSync(`${projectPath}/src/routes/v1/organizer.route.js`);
+            fs.unlinkSync(`${projectPath}/src/controllers/v1/organizer.controller.js`);
+            fs.unlinkSync(`${projectPath}/src/controllers/v1/endUser.controller.js`);
+            fs.unlinkSync(`${projectPath}/src/services/event.service.js`);
 
-            // Create Event Model
-            let eventModel = modelService.createEventSchema('event', pathToConfigFile, true);
-            helper.writeProjectFile(`${projectPath}/src`, 'models', 'event.model.js', eventModel);
+            fs.renameSync(`${projectPath}/src/routes/v1/custom-organizer.route.js`, `${projectPath}/src/routes/v1/organizer.route.js`);
+            fs.renameSync(`${projectPath}/src/controllers/v1/custom-organizer.controller.js`, `${projectPath}/src/controllers/v1/organizer.controller.js`);
+            fs.renameSync(`${projectPath}/src/controllers/v1/custom-endUser.controller.js`, `${projectPath}/src/controllers/v1/endUser.controller.js`);
+            fs.renameSync(`${projectPath}/src/services/custom-event.service.js`, `${projectPath}/src/services/event.service.js`);
+
+            helper.writeProjectFile(`${projectPath}/src`, 'transformers', 'event.transformer.js', generateEventTransformer(schemaFile));
         } else {
-            console.log('eventSchema', eventSchema);
-            // Validate the input schema
-            const schema = validateDynamicSchema();
-            const { error, value } = schema.validate(eventSchema, { abortEarly: true });
-            console.log('value', value);
-            if (error) {
-                console.error('❌ Validation Error:', error.details.map((err) => err.message));
-                return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
-                    message: error.details.map((err) => err.message)[0],
-                    statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
-                })
-            } else {
-                console.log('✅ Validation Passed:', value);
-            }
-            // Create Event Model
-            let eventModel = modelService.createEventSchema('event', null, true, { eventSchema: value });
-            console.log('eventModel', JSON.stringify(eventModel));
-            helper.writeProjectFile(`${projectPath}/src`, 'models', 'event.model.js', eventModel);
+            fs.unlinkSync(`${projectPath}/src/routes/v1/custom-organizer.route.js`);
+            fs.unlinkSync(`${projectPath}/src/controllers/v1/custom-organizer.controller.js`);
+            fs.unlinkSync(`${projectPath}/src/controllers/v1/custom-endUser.controller.js`);
+            fs.unlinkSync(`${projectPath}/src/services/custom-event.service.js`);
         }
 
         helper.writeProjectFile(`${projectPath}`, '', 'dependencies.js', generateDependencies());
@@ -55,6 +81,7 @@ module.exports.createProject = async (req, res) => {
         helper.writeProjectFile(`${projectPath}`, '', 'README.md', generateREADME(projectTitle));
 
         await helper.createZipFile(projectPath, zipFilePath);
+
         // Generate the download URL
         const downloadUrl = `${req.protocol}://${req.get('host')}/generated_projects/${zipFileName}`;
 
@@ -62,6 +89,7 @@ module.exports.createProject = async (req, res) => {
             helper.deleteFile({ name: projectTitle, folderName: 'generated_projects' });
             helper.deleteFile({ name: `${projectTitle}.zip`, folderName: 'generated_projects' });
         }, 60000)
+
         return responseHelper.successapi(res, res.__('projectCreated'), constants.META_STATUS.DATA, constants.WEB_STATUS_CODE.OK, { downloadUrl });
 
     } catch (err) {

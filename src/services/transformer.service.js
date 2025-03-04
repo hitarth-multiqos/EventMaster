@@ -1,3 +1,5 @@
+const { generateDynamicTransformers } = require("../helpers/helper");
+
 exports.generateTransformer = (moduleName) => `
 exports.${moduleName}Transformer = (data) => {
     
@@ -34,3 +36,74 @@ exports.${moduleName}ListTransformer = (arrayData) => {
     return arrayData;
 };
 `;
+
+exports.generateEventTransformer = (schema, type = 'file') => {
+
+    let pathToSchema = schema;
+    let { eventSchema } = type == 'file' ? require(pathToSchema) : schema;
+
+    return `const helper = require('../helpers/helper');
+    const dateFormat = require('../helpers/dateFormat.helper');
+
+    const eventTransformer = (data) => {
+    
+        data = JSON.parse(JSON.stringify(data));
+    
+        let obj = ${generateDynamicTransformers(eventSchema)};
+    
+       return obj;
+    };
+    
+    const listEventTransformer = (arrayData) => {
+        let responseData = [];
+    
+        if (arrayData.length) {
+            responseData = arrayData.map(x => eventTransformer(x));
+        }
+        return responseData;
+    };
+    
+    
+    const eventViewTransformer = (arrayData) => {
+        let responseData = null;
+        if (arrayData) {
+            responseData = eventTransformer(arrayData);
+        }
+        return responseData;
+    };
+    
+    const endUserEventTransformer = (data) => {
+    
+        data = JSON.parse(JSON.stringify(data));
+    
+        let obj = ${generateDynamicTransformers(eventSchema)};
+
+        return obj;
+    };
+    
+    
+    const eventEndUserViewTransformer = (arrayData, language = 'en') => {
+        let responseData = null;
+        if (arrayData) {
+            responseData = endUserEventTransformer(arrayData, language);
+        }
+        return responseData;
+    };
+    
+    const endUserListEventTransform = (arrayData) => {
+        let responseData = [];
+    
+        if (arrayData.length) {
+            responseData = arrayData.map(x => endUserEventTransformer(x));
+        }
+        return responseData;
+    };
+    
+    
+    module.exports = {
+        eventViewTransformer,
+        listEventTransformer,
+        eventEndUserViewTransformer,
+        endUserListEventTransform,
+    };`;
+}

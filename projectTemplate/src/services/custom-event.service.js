@@ -11,7 +11,7 @@ exports.listAndViewEvent = async (data) => {
         let pipeline = [];
         let currentTimestamp = dateFormat.setCurrentTimestamp();
 
-        let query = { deletedAt: null }
+        let query = { status: { $ne: constants.STATUS.DELETED } }
 
         if (data?.eventId) {
             query['_id'] = new ObjectId(data.eventId);
@@ -27,54 +27,7 @@ exports.listAndViewEvent = async (data) => {
             query.status = constants.EVENT_STATUS.ACTIVE
         }
 
-        if (data.hosted) {
-            query.startTime = { $lt: currentTimestamp }
-        }
-
-        if (data.upcoming) {
-            query.startTime = { $gt: currentTimestamp }
-        }
-
-        // Filter by startDate and endDate
-        if (data?.startDate && data?.endDate) {
-            query.startTime = { $gte: data.startDate, $lte: data.endDate };
-        }
-
-        // Filter by location (assume location is a city ID)
-        if (data?.location) {
-            query.city = new ObjectId(data.location);
-        }
-
-        // Filter by paid
-        if (data?.paid) {
-            query.price = { $gt: 0 };
-        }
-
-        // Filter by free
-        if (data?.free) {
-            query.price = 0;
-        }
-
-        // Filter by eventType
-        if (data?.eventType) {
-            query.eventType = data.eventType;
-        }
-
         pipeline.push({ $match: query });
-
-        pipeline.push({
-            $lookup: {
-                from: 'cities',
-                localField: 'city',
-                foreignField: '_id',
-                as: 'cityDetails'
-            }
-        }, {
-            $unwind: {
-                path: '$cityDetails',
-                preserveNullAndEmptyArrays: true
-            }
-        });
 
         pipeline.push({
             $lookup: {
@@ -99,7 +52,7 @@ exports.listAndViewEvent = async (data) => {
         })
 
         if (data.search) {
-            let fieldsArray = ["title", "organizerDetails.firstName", "organizerDetails.lastName", "organizerDetails.email", "cityDetails.name"];
+            let fieldsArray = ["organizerDetails.firstName", "organizerDetails.lastName", "organizerDetails.email"];
             pipeline.push(helper.searchHelper(data.search, fieldsArray));
         }
 
@@ -153,7 +106,7 @@ exports.deleteEvents = async (filter) => {
 
         }
 
-        let deletedEvents = await Event.updateMany(filter, { deletedAt: dateFormat.setCurrentTimestamp(), status: constants.STATUS.DELETED });
+        let deletedEvents = await Event.updateMany(filter, { status: constants.STATUS.DELETED });
         console.log('deletedEvents', deletedEvents);
     } catch (err) {
         console.log('Error(deleteEvents)', err);
@@ -290,7 +243,7 @@ exports.listViewEventsForEndUsers = async (data) => {
         let pipeline = [];
         let currentTimestamp = dateFormat.setCurrentTimestamp();
 
-        let query = { deletedAt: null, status: constants.EVENT_STATUS.ACTIVE }
+        let query = { status: constants.EVENT_STATUS.ACTIVE }
 
         if (data?.eventId) {
             query['_id'] = new ObjectId(data.eventId);
@@ -300,58 +253,7 @@ exports.listViewEventsForEndUsers = async (data) => {
             query['userId'] = new ObjectId(data.userId);
         }
 
-        if (data?.slug) {
-            query['slug'] = data?.slug;
-        }
-
-        if (data.hosted) {
-            query.startTime = { $lt: currentTimestamp }
-        }
-
-        if (data.upcoming) {
-            // query.startTime = { $gt: currentTimestamp }
-        }
-
-        // Filter by startDate and endDate
-        if (data?.startDate && data?.endDate) {
-            query.startTime = { $gte: data.startDate, $lte: data.endDate };
-        }
-
-        // Filter by location (assume location is a city ID)
-        if (data?.location) {
-            query.city = new ObjectId(data.location);
-        }
-
-        // Filter by paid
-        if (data?.paid) {
-            query.price = { $gt: 0 };
-        }
-
-        // Filter by free
-        if (data?.free) {
-            query.price = 0;
-        }
-
-        // Filter by eventType
-        if (data?.eventType) {
-            query.eventType = data.eventType;
-        }
-
         pipeline.push({ $match: query });
-
-        pipeline.push({
-            $lookup: {
-                from: 'cities',
-                localField: 'city',
-                foreignField: '_id',
-                as: 'cityDetails'
-            }
-        }, {
-            $unwind: {
-                path: '$cityDetails',
-                preserveNullAndEmptyArrays: true
-            }
-        });
 
         pipeline.push({
             $lookup: {
@@ -376,7 +278,7 @@ exports.listViewEventsForEndUsers = async (data) => {
         })
 
         if (data.search) {
-            let fieldsArray = ["title", "organizerDetails.firstName", "organizerDetails.lastName", "organizerDetails.email", "cityDetails.name"];
+            let fieldsArray = ["organizerDetails.firstName", "organizerDetails.lastName", "organizerDetails.email"];
             pipeline.push(helper.searchHelper(data.search, fieldsArray));
         }
 

@@ -196,3 +196,45 @@ exports.createZipFile = async (sourceFolder, zipFilePath) => {
         }
     });
 }
+
+exports.generateDynamicTransformers = (schemaJson) => {
+    let transformerString = '';
+    Object.keys(schemaJson).forEach((field) => {
+        const fieldType = Array.isArray(schemaJson[field]) ? 'Array' : schemaJson[field]?.type;
+
+        switch (fieldType) {
+
+            case (fieldType === "String"):
+                transformerString += `${field}: data?.${field}?.toString() || '',\n`;
+                break;
+
+            case (fieldType === "Date"):
+                transformerString += `${field}: new Date(data?.${field}).toISOString() || '',\n`;
+                break;
+
+            case (fieldType === "Number"):
+                transformerString += `${field}: data?.${field} || 0,\n`;
+                break;
+
+            case (fieldType === "Object"):
+                transformerString += `${field}: data?.${field} || {},\n`;
+                break;
+
+            case (fieldType === "Array"):
+                transformerString += `${field}: data?.${field} || [],\n`;
+                break;
+
+            case (fieldType === "Mixed"):
+                transformerString += `${field}: data?.${field},\n`;
+                break;
+
+            default:
+                transformerString += `${field}: data?.${field} || '',\n`;
+
+        }
+    });
+
+    const transformers = `{${transformerString}}`;
+
+    return transformers;
+};
