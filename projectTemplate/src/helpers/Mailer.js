@@ -30,13 +30,6 @@ const sendEmail = async (email, emailBody, subject) => {
 
         const transporter = nodemailer.createTransport(mailConfig);
 
-        transporter.verify(function (error, success) {
-            if (error) {
-                console.log('Error in transporter', error);
-            } else {
-                console.log("Server is ready to take our messages");
-            }
-        });
 
         let mailData = {
             from: {

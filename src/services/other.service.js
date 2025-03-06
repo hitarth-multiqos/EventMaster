@@ -6,7 +6,9 @@ exports.generatePackageJSON = (projectTitle) => `{
     "main": "src/app.js",
     "scripts": {
     "dev": "node src/app.js",
-    "deps": "node dependencies.js"
+    "deps": "node dependencies.js",
+    "test": "jest --detectOpenHandles",
+    "jest:clearCache": "jest --clearCache"
     },
     "keywords": [],
     "author": "",

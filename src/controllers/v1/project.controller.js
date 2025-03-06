@@ -102,6 +102,34 @@ module.exports.createNewModule = async (req, res) => {
     try {
 
         let { projectTitle, moduleName } = req.body;
+
+
+        if (!projectTitle) {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Project title is required",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+        if (typeof (projectTitle) != 'string') {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Please enter valid project title",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+
+        if (!moduleName) {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Module name is required",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+        if (typeof (moduleName) != 'string') {
+            return res.status(constants.WEB_STATUS_CODE.BAD_REQUEST).send({
+                message: "Please enter valid Module name",
+                statusCode: constants.WEB_STATUS_CODE.BAD_REQUEST
+            });
+        }
+
         moduleName = moduleName.split(',');
 
         let moduleGenerated = new Array(moduleName.length).fill(false);

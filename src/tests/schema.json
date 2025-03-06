@@ -1,0 +1,7 @@
+{
+  "eventSchema": {
+    "titleDe": { "type": "String" },
+    "descriptionDe": { "type": "String" },
+    "field": { "type": "String" }
+  }
+}

@@ -35,7 +35,8 @@ let schema = {
     price: { type: Number },
     currency: {
         type: String,
-        index: false
+        index: false,
+        required: true
     },
     images: [{ type: String, index: true }],
     video: { type: String, index: false },
@@ -46,7 +47,7 @@ let schema = {
         enum: Object.values(constants.EVENT_STATUS),
         index: true
     },
-    totalTickets: { type: Number },
+    totalTickets: { type: Number, required: true },
     venue: { type: String },
     city: { type: mongoose.Types.ObjectId, ref: 'city', index: true },
     link: { type: String },
@@ -75,9 +76,10 @@ const eventSchema = new mongoose.Schema(schema);
 
 //Output data to JSON
 eventSchema.methods.toJSON = function () {
-    let user = this;
-    let userObject = user.toObject();
-    return userObject;
+    let event = this;
+    console.log('event----------------------------------------', event);
+    let eventObject = event.toObject();
+    return eventObject;
 };
 
 eventSchema.pre('save', async function (next) {

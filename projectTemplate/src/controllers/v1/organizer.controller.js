@@ -14,6 +14,7 @@ const addEditEvent = async (req, res) => {
         let reqBody = req.body;
         reqBody.userId = req.user._id;
         reqBody.totalTickets = parseInt(reqBody.totalTickets, 10);
+        reqBody.price = +reqBody?.price;
 
         console.log('reqBody', reqBody);
 
@@ -70,7 +71,7 @@ const addEditEvent = async (req, res) => {
             responseHelper.successapi(res, res.__('eventCreated'), constants.META_STATUS.DATA, constants.WEB_STATUS_CODE.OK, newEvent);
         } else {
             // Update existing event
-            const eventDetails = await Event.findOne({ _id: reqBody?.eventId, deletedAt: null });
+            const eventDetails = await Event.findOne({ _id: reqBody?.eventId, deletedAt: null }).lean();
             if (!eventDetails) {
                 helper.deleteFilesIfAnyValidationError(req?.files || {});
                 return responseHelper.successapi(res, res.__('eventNotFound'), constants.META_STATUS.NO_DATA, constants.WEB_STATUS_CODE.OK);
@@ -83,7 +84,7 @@ const addEditEvent = async (req, res) => {
                 return responseHelper.successapi(res, res.__('eventIsOngoing'), constants.META_STATUS.NO_DATA, constants.WEB_STATUS_CODE.OK);
             }
 
-            const updatedEvent = await eventService.updateEventObj(reqBody, eventDetails);
+            const updatedEvent = eventService.updateEventObj(reqBody, eventDetails);
             await Event.updateOne({ _id: reqBody.eventId }, updatedEvent);
             await eventService.generateEventSlug(reqBody.eventId);
 

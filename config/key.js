@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-let key = (process.env.ENVIRONMENT).toUpperCase();
+let key = (process.env.ENVIRONMENT)?.toUpperCase();
 
 module.exports = {
 	PORT: key == 'PRODUCTION' ? process.env.PORT_PROD : key == 'DEV' ? process.env.PORT_DEV : process.env.PORT_LOCAL,

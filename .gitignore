@@ -5,3 +5,5 @@ logger
 .env
 package-lock.json
 eventSchemaOriginal.json
+src-old
+test-assets

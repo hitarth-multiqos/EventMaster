@@ -6,25 +6,25 @@ mongoose.connect(DB_AUTH_URL, {
 });
 
 mongoose.connection.on('error', (err) => {
-	console.log('Database connection err', err);
+	console.log('❌ Database connection err', err);
 	throw err;
 });
 
 mongoose.connection.on('connected', () => {
-	console.log('Connected to database');
-	mongoose.syncIndexes().then(() => console.log('Indexes synchronized successfully')).catch(err => console.log('err', err));
+	console.log('✅ Connected to database');
+	mongoose.syncIndexes().then(() => console.log('✅ Indexes synchronized successfully')).catch(err => console.log('err', err));
 });
 
 mongoose.connection.on('connecting', function () {
-	console.log('Trying to establish a connection to mongo');
+	console.log('🔄 Trying to establish a connection to mongo');
 });
 
 mongoose.connection.on('error', function (err) {
-	console.log('Connection to mongo failed ' + err);
+	console.log('❌ Connection to mongo failed ' + err);
 });
 
 mongoose.connection.on('disconnected', function () {
-	console.log('Mongo connection closed');
+	console.log('⚠️ Mongo connection closed');
 
 	mongoose.connect(DB_AUTH_URL, {
 		maxPoolSize: 10

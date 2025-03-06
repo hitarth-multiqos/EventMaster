@@ -163,7 +163,7 @@ exports.deleteEvents = async (filter) => {
 exports.updateEventObj = (reqBody, eventDetails) => {
     const updatedEvent = { ...eventDetails };
 
-    if (reqBody.images) {
+    if (reqBody?.images) {
         updatedEvent.images = [...new Set([...reqBody.images, ...eventDetails.images])];
     }
 
@@ -181,7 +181,7 @@ exports.updateEventObj = (reqBody, eventDetails) => {
     updatedEvent.eventType = reqBody.eventType || updatedEvent.eventType;
     updatedEvent.totalTickets = reqBody.totalTickets || updatedEvent.totalTickets;
     updatedEvent.price = reqBody.price || updatedEvent.price;
-    updatedEvent.updatedAt = +new Date();
+    updatedEvent.updatedAt = +dateFormat.setCurrentTimestamp();
 
     return updatedEvent;
 };
@@ -271,7 +271,7 @@ exports.generateEventSlug = async (eventId) => {
 
         let eventData = await Event.findOne({ _id: eventId }, { title: 1, slug: 1 });
         if (!eventData) return;
-        let slug = generateSlug(eventData.title);
+        let slug = helper.generateSlug(eventData.title);
 
         slug = slug + '-' + eventData._id?.toString()?.slice(12, 24);
         eventData.slug = slug;
@@ -288,7 +288,7 @@ exports.listViewEventsForEndUsers = async (data) => {
     try {
 
         let pipeline = [];
-        let currentTimestamp = dateFormat.setCurrentTimestamp();
+        let currentTimestamp = +dateFormat.setCurrentTimestamp();
 
         let query = { deletedAt: null, status: constants.EVENT_STATUS.ACTIVE }
 
@@ -309,7 +309,7 @@ exports.listViewEventsForEndUsers = async (data) => {
         }
 
         if (data.upcoming) {
-            // query.startTime = { $gt: currentTimestamp }
+            query.startTime = { $gt: currentTimestamp }
         }
 
         // Filter by startDate and endDate

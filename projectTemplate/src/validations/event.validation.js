@@ -7,7 +7,7 @@ const createEventSchema = {
     description: Joi.string().allow(null, ''),
     isSponsored: Joi.boolean().default(false),
     eventType: Joi.string().required(),
-    language: Joi.array().items(Joi.string()).default([]),
+    language: Joi.array().items(Joi.string().default('en')),
     startTime: Joi.number().required(),
     endTime: Joi.number().required(),
     price: Joi.number().positive().required().default(0),
@@ -22,11 +22,30 @@ const createEventSchema = {
 
 exports.createEventValidation = (req, res, next) => {
 
-    req?.body?.language && (req.body.language = JSON.parse(req.body.language));
+    // req?.body?.language && (req.body.language = JSON.parse(req.body.language));
+    if (req.body.language) {
+        try {
+            // Attempt to parse the language field if it's a string
+            const parsedLanguage = JSON.parse(req.body.language);
+
+            // Ensure it's actually an array
+            if (!Array.isArray(parsedLanguage)) {
+                return res.status(400).json({
+                    meta: { status: 0, message: "Language must be an array." },
+                });
+            }
+
+            req.body.language = parsedLanguage;
+        } catch (error) {
+            return res.status(400).json({
+                meta: { status: 0, message: "Invalid format for language field. Must be a valid JSON array." },
+            });
+        }
+    }
     req?.body?.startTime && (req.body.startTime = +(req.body.startTime));
     req?.body?.endTime && (req.body.endTime = +(req.body.endTime));
-    req?.body?.category && (req.body.category = +(req.body.category));
 
+    console.log("Parsed language:", req?.body?.language);
     const schema = Joi.object(createEventSchema).unknown(true);
 
     const { error } = schema.validate(req.body);
@@ -55,9 +74,8 @@ exports.viewEventValidation = (req, res, next) => {
 exports.listEventValidation = (req, res, next) => {
 
     const schema = Joi.object({
-        isSponsored: Joi.boolean(),
-        category: Joi.number(),
-    }).optional().xor('isSponsored', 'category').unknown(true);
+        isSponsored: Joi.boolean().optional(),
+    }).unknown(true);
 
     const { error } = schema.validate(req.body);
     if (error) {

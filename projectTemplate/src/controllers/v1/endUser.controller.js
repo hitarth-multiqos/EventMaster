@@ -54,7 +54,7 @@ const viewEvent = async (req, res) => {
             upcoming: true
         };
 
-        if (eventId) query._id = eventId;
+        if (eventId) query.eventId = eventId;
         if (slug) query.slug = slug;
 
         let eventData = await eventService.listViewEventsForEndUsers(query)
@@ -93,7 +93,7 @@ const viewOrganizerProfile = async (req, res) => {
 
         let eventData = await eventService.listAndViewEvent(query)
 
-        if (!eventData[0])
+        if (!eventData[0]?.data?.length)
             return responseHelper.successapi(res, res.__('eventNotFound'), constants.META_STATUS.NO_DATA, constants.WEB_STATUS_CODE.OK);
 
         let organizerDetails = await User.findOne({ _id: reqBody.userId });

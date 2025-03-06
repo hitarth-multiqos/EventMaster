@@ -3,6 +3,7 @@ const moment = require('moment');
 exports.setCurrentTimestamp = () => moment().format('x');
 
 exports.addTimeToCurrentTimestamp = (number, unit) => moment().add(number, unit).format('x');
+exports.subtractTimeToCurrentTimestamp = (number, unit) => moment().subtract(number, unit).format('x');
 
 exports.getDateAndTimeFromTimestamp = (timestamp, format, language = 'en') => {
     moment.locale(language);

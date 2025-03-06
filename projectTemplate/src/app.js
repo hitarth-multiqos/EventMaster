@@ -31,7 +31,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false, parameterLimit: 50000 }));
 
 let server
-let serverSSl
 if (IS_SSL == 'true') {
 
     const options = {
@@ -40,20 +39,16 @@ if (IS_SSL == 'true') {
         ca: fs.readFileSync('/var/www/ssl/ca-bundle.crt')
     };
 
-    serverSSl = https.createServer(options, app);
-
-
-    serverSSl.listen(PORT, () => {
-        console.log('server listening on port:', PORT)
-    })
+    server = https.createServer(options, app);
 
 } else {
     console.log('No -----------IS_SSL')
     server = http.createServer(app)
-    server.listen(PORT, () => {
-        console.log('Server listening on port:', PORT)
-    })
 }
+
+server.listen(PORT, () => {
+    console.log('Server listening on port:', PORT);
+});
 
 logger.debug('********************************************************************************************************************************************');
 logger.debug(`🚀⭐️  PORT: ${PORT}`);
@@ -117,3 +112,5 @@ app.use('*', (req, res, next) => {
         },
     });
 })
+
+module.exports = { app, server };

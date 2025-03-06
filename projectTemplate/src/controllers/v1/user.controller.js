@@ -17,7 +17,7 @@ const eventServices = require('../../services/event.service');
 const { checkEmailAndNumber } = require('../../services/checkNumberAndEmail');
 const { BASE_URL } = require('../../../config/key');
 
-const { schemaForRegisterUser, socialSignUpValidation, socialLoginValidation } = require('../../validations/user.validation');
+const { socialSignUpValidation, socialLoginValidation } = require('../../validations/user.validation');
 
 // Register user
 module.exports.register = async (req, res) => {
@@ -49,7 +49,7 @@ module.exports.register = async (req, res) => {
         }
 
         userDetails.profileImage = req?.files?.profileImage ? await helper.getFileName(req?.files?.profileImage[0]) : '';
-        userDetails.password = await bcrypt.hash(reqBody.password, 10);
+        userDetails.password = bcrypt.hashSync(reqBody.password, 10);
         userDetails.isVerified = reqBody.userType == constants.USER_TYPE.END_USER ? true : false
         userDetails.dateOfJoining = dateFormat.setCurrentTimestamp();
 
@@ -758,7 +758,7 @@ module.exports.guestLogin = async (req, res) => {
             let message = 'accountIsAlreadyExist';
             if (checkGuestUserExist.socialType == 'google') message = "accountAlreadyExistsWithGoogle";
             if (checkGuestUserExist.socialType == 'apple') message = "accountAlreadyExistsWithApple";
-            return responseHelper.error(res, res.__(message), constants.WEB_STATUS_CODE.OK);
+            return responseHelper.successapi(res, res.__(message), constants.META_STATUS.NO_DATA, constants.WEB_STATUS_CODE.OK);
         }
 
         if (!checkGuestUserExist) {

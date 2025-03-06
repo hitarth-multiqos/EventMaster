@@ -442,5 +442,6 @@
 	"validationStartTimeBase": "Please enter valid start time",
 	"validationEndTimeBase": "Please enter valid end time",
 	"validationTotalTicketsRequired": "Total tickets is required",
-	"validationPricePositive": "Price must be positive"
+	"validationPricePositive": "Price must be positive",
+	"validationSubRequired": "Sub is required"
 }
