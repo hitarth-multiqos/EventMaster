@@ -41,4 +41,4 @@ npm run deps
 2. Run project:
 npm run dev
 `
-exports.generateDependencies = () => "const {exec} = require('child_process');\nexec('npm i @ffmpeg-installer/ffmpeg @ffprobe-installer/ffprobe bcryptjs body-parser cors cron dotenv ejs express ffmpeg fluent-ffmpeg helmet i18n joi joi-objectid jsonwebtoken moment mongoose morgan multer nodemailer sharp winston')"
+exports.generateDependencies = () => "const {exec} = require('child_process');\nexec('npm i jest supertest @ffmpeg-installer/ffmpeg @ffprobe-installer/ffprobe bcryptjs body-parser cors cron dotenv ejs express ffmpeg fluent-ffmpeg helmet i18n joi joi-objectid jsonwebtoken moment mongoose morgan multer nodemailer sharp winston')"

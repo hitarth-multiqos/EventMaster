@@ -8,6 +8,7 @@ const { generateNewModuleService } = require('../../services/module.service');
 const { generateDependencies, generatePackageJSON, generateENV, generateREADME } = require('../../services/other.service');
 const { generateEventTransformer } = require('../../services/transformer.service');
 const fs = require('fs');
+const { exec, execSync } = require('child_process');
 
 // Create Project
 module.exports.createProject = async (req, res) => {
@@ -66,6 +67,8 @@ module.exports.createProject = async (req, res) => {
             fs.renameSync(`${projectPath}/src/controllers/v1/custom-organizer.controller.js`, `${projectPath}/src/controllers/v1/organizer.controller.js`);
             fs.renameSync(`${projectPath}/src/controllers/v1/custom-endUser.controller.js`, `${projectPath}/src/controllers/v1/endUser.controller.js`);
             fs.renameSync(`${projectPath}/src/services/custom-event.service.js`, `${projectPath}/src/services/event.service.js`);
+
+            helper.deleteFile({ folderName: "generated_projects", name: `${projectTitle}/src/tests` });
 
             helper.writeProjectFile(`${projectPath}/src`, 'transformers', 'event.transformer.js', generateEventTransformer(schemaFile));
         } else {
